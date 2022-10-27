@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <WS2tcpip.h>
 #include <winsock2.h>
 
 int main()
@@ -9,9 +8,8 @@ int main()
     int port = 54000;                         // Listening port # on the server
 
     // Initialize WinSock
-    WSAData data;
-    WORD ver = MAKEWORD(2, 2);
-    int res = WSAStartup(ver, &data);
+    WSAData wsaData;
+    int res = WSAStartup(MAKEWORD(2, 2), &wsaData);
     if (res == 0)
     {
         std::cout << "WSA done..." << std::endl;
@@ -39,7 +37,7 @@ int main()
     sockaddr_in info;
     info.sin_family = AF_INET;
     info.sin_port = htons(port);
-    inet_pton(AF_INET, ipAddress.c_str(), &info.sin_addr);
+    info.sin_addr.s_addr = inet_addr(ipAddress.c_str());
 
     // Connect to server
     int server = connect(clientConnect, (sockaddr *)&info, sizeof(info));
